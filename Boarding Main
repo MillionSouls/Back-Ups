@@ -1,0 +1,151 @@
+one = script.Parent.one.Value
+two = script.Parent.two.Value
+three = script.Parent.three.Value
+
+reset = script.Parent.reset
+
+i = false
+f = false
+b = false
+p = false
+e = false
+
+
+inv = script.Parent.INV
+fc = script.Parent.FC
+bc = script.Parent.BC
+pe = script.Parent.PE
+ec = script.Parent.EC
+
+inv.MouseButton1Click:Connect(function()
+	if i == false then
+		one.INV.Disabled = false
+		two.INV.Disabled = false
+		three.INV.Disabled = false
+		script.Parent.wall.Value.CanCollide = false
+		script.Parent.wall.Value.Transparency = 1
+		inv.BackgroundColor3 = Color3.fromRGB(0, 255, 0)
+		i = true
+	elseif i == true then
+		one.INV.Disabled = true
+		two.INV.Disabled = true
+		three.INV.Disabled = true
+		script.Parent.wall.Value.CanCollide = true
+		script.Parent.wall.Value.Transparency = 0
+		inv.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+		i = false
+	end
+end)
+
+fc.MouseButton1Click:Connect(function()
+	if f == false then
+		one.FC.Disabled = false
+		two.FC.Disabled = false
+		three.FC.Disabled = false
+		script.Parent.wall.Value.CanCollide = false
+		script.Parent.wall.Value.Transparency = 1
+		fc.BackgroundColor3 = Color3.fromRGB(0, 255, 0)
+		f = true
+	elseif f == true then
+		one.FC.Disabled = true
+		two.FC.Disabled = true
+		three.FC.Disabled = true
+		script.Parent.wall.Value.CanCollide = true
+		script.Parent.wall.Value.Transparency = 0
+		fc.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+		f = false
+	end
+end)
+
+bc.MouseButton1Click:Connect(function()
+	if b == false then
+		one.BC.Disabled = false
+		two.BC.Disabled = false
+		three.BC.Disabled = false
+		script.Parent.wall.Value.CanCollide = false
+		script.Parent.wall.Value.Transparency = 1
+		bc.BackgroundColor3 = Color3.fromRGB(0, 255, 0)
+		b = true
+	elseif b == true then
+		one.BC.Disabled = true
+		two.BC.Disabled = true
+		three.BC.Disabled = true
+		script.Parent.wall.Value.CanCollide = true
+		script.Parent.wall.Value.Transparency = 0
+		bc.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+		b = false
+	end
+end)
+
+pe.MouseButton1Click:Connect(function()
+	if p == false then
+		one.PE.Disabled = false
+		two.PE.Disabled = false
+		three.PE.Disabled = false
+		script.Parent.wall.Value.CanCollide = false
+		script.Parent.wall.Value.Transparency = 1
+		pe.BackgroundColor3 = Color3.fromRGB(0, 255, 0)
+		p = true
+	elseif p == true then
+		one.PE.Disabled = true
+		two.PE.Disabled = true
+		three.PE.Disabled = true
+		script.Parent.wall.Value.CanCollide = true
+		script.Parent.wall.Value.Transparency = 0
+		pe.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+		p = false
+	end
+end)
+
+ec.MouseButton1Click:Connect(function()
+	if e == false then
+		one.EC.Disabled = false
+		two.EC.Disabled = false
+		three.EC.Disabled = false
+		script.Parent.wall.Value.CanCollide = false
+		script.Parent.wall.Value.Transparency = 1
+		ec.BackgroundColor3 = Color3.fromRGB(0, 255, 0)
+		e = true
+	elseif e == true then
+		one.EC.Disabled = true
+		two.EC.Disabled = true
+		three.EC.Disabled = true
+		script.Parent.wall.Value.CanCollide = true
+		script.Parent.wall.Value.Transparency = 0
+		ec.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+		e = false
+	end
+end)
+
+reset.MouseButton1Click:Connect(function()
+	one.EC.Disabled = true
+	one.PE.Disabled = true
+	one.BC.Disabled = true
+	one.FC.Disabled = true
+	one.INV.Disabled = true
+	two.EC.Disabled = true
+	two.PE.Disabled = true
+	two.BC.Disabled = true
+	two.FC.Disabled = true
+	two.INV.Disabled = true
+	three.EC.Disabled = true
+	three.PE.Disabled = true
+	three.BC.Disabled = true
+	three.FC.Disabled = true
+	three.INV.Disabled = true
+	ec.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+	pe.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+	bc.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+	fc.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+	inv.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+	script.Parent.wall.Value.CanCollide = true
+	script.Parent.wall.Value.Transparency = 0
+end)
+--------------------------------
+--------------------------------
+--------------------------------
+--------------------------------
+--------------------------------
+--------------------------------
+--------------------------------
+--------------------------------
