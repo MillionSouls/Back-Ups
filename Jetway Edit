@@ -1,18 +1,3 @@
---[[
-	 __        __  _______  __    __  __   __  ________
-    /  \      / / / _____/  \ \  / /  \ \  \ \ \  _____\
-   / /\ \    / / / /____     \ \/ /    \ \  \ \ \ \_____
-  / /  \ \  / / / _____/     / /\ \     \ \  \ \ \_____ \
- / /    \ \/ / / /____      / /  \ \     \ \__\ \  ____\ \
-/_/      \__/ /______/     /_/    \_\     \______\ \______\
-
-Nexus Jetway, by TheNexusAvenger
-
-
-
-Date: December 25 2017
---]]
-
 local Player = game.Players.LocalPlayer
 local Character = Player.Character
 local Humanoid = Character:WaitForChild("Humanoid")
