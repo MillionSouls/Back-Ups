@@ -1,0 +1,355 @@
+--[[
+	 __        __  _______  __    __  __   __  ________
+    /  \      / / / _____/  \ \  / /  \ \  \ \ \  _____\
+   / /\ \    / / / /____     \ \/ /    \ \  \ \ \ \_____
+  / /  \ \  / / / _____/     / /\ \     \ \  \ \ \_____ \
+ / /    \ \/ / / /____      / /  \ \     \ \__\ \  ____\ \
+/_/      \__/ /______/     /_/    \_\     \______\ \______\
+
+Nexus Jetway, by TheNexusAvenger
+
+
+
+Date: December 25 2017
+--]]
+
+local Player = game.Players.LocalPlayer
+local Character = Player.Character
+local Humanoid = Character:WaitForChild("Humanoid")
+
+local deg,rad,max,min = math.deg,math.rad,math.max,math.min
+
+local Camera = game.Workspace.CurrentCamera
+Camera.CameraType = "Track"
+
+local JetwayValue = script:WaitForChild("Jetway")
+local Jetway = JetwayValue.Value
+while not Jetway do Jetway = JetwayValue.Value wait() end
+
+
+
+
+
+
+local PlayerGui = script.Parent
+local ScreenGui = Instance.new("ScreenGui")
+ScreenGui.Name = "JetwayKeyGuide"
+ScreenGui.Parent = PlayerGui
+
+local ToggleControls = Instance.new("TextButton")
+ToggleControls.BackgroundTransparency = 1
+ToggleControls.Size = UDim2.new(0.075,0,0.15,0)
+ToggleControls.SizeConstraint = "RelativeYY"
+ToggleControls.Position = UDim2.new(0.01,0,0.99,0)
+ToggleControls.AnchorPoint = Vector2.new(0,1)
+ToggleControls.Font = "SourceSansBold"
+ToggleControls.TextColor3 = Color3.new(0,170/255,1)
+ToggleControls.TextStrokeColor3 = Color3.new(0,170/255,1)
+ToggleControls.TextStrokeTransparency = 0
+ToggleControls.Text = "?"
+ToggleControls.TextScaled = true
+ToggleControls.Parent = ScreenGui
+
+local QEColor = Color3.new(1,0,0)
+local WSColor = Color3.new(0,1,0)
+local ADColor = Color3.new(0,0,1)
+local ZCColor = Color3.new(1,85/255,0)
+local RFColor = Color3.new(1,1,0)
+local BlankColor = Color3.new(200/255,200/255,200/255)
+
+
+local EnableableAdorns = {}
+local VisableAdorns = {}
+local CircleSegments = 24
+local function CreateRing(Part,Color,Radius,CFOffset)
+	local Length = (math.tan((1/CircleSegments) * math.pi) * Radius) * 2
+	
+	for i = 1, CircleSegments do
+		local CylinderHandleAdornment = Instance.new("CylinderHandleAdornment")
+		CylinderHandleAdornment.Adornee = Part
+		CylinderHandleAdornment.Transparency = 0.5
+		CylinderHandleAdornment.Color3 = Color
+		CylinderHandleAdornment.AlwaysOnTop = true
+		CylinderHandleAdornment.ZIndex = 1
+		CylinderHandleAdornment.Height = Length
+		CylinderHandleAdornment.Radius = 0.1
+		CylinderHandleAdornment.CFrame = CFOffset * CFrame.Angles(0,(i/CircleSegments) * math.pi * 2,0) * CFrame.new(Radius - 0.05,0,0)
+		CylinderHandleAdornment.Visible = false
+		CylinderHandleAdornment.Parent = script
+		
+		table.insert(VisableAdorns,CylinderHandleAdornment)
+	end
+end
+
+local function CreateLetter(Part,Color,Offset,Letter)
+	local BillboardGui = Instance.new("BillboardGui")
+	BillboardGui.AlwaysOnTop = true
+	BillboardGui.Adornee = Part
+	BillboardGui.Size = UDim2.new(3,0,3,0)
+	BillboardGui.StudsOffsetWorldSpace = Offset
+	BillboardGui.Enabled = false
+	BillboardGui.Parent = script
+	table.insert(EnableableAdorns,BillboardGui)
+	
+	local Text = Instance.new("TextLabel")
+	Text.Size = UDim2.new(1,0,1,0)
+	Text.BackgroundTransparency = 1
+	Text.Font = "SourceSansBold"
+	Text.TextColor3 = Color
+	Text.TextScaled = true
+	Text.Text = Letter
+	Text.Parent = BillboardGui
+end
+
+local function CreateArrow(Part,Color,Length,Offset)
+	local CylinderHandleAdornment = Instance.new("CylinderHandleAdornment")
+	CylinderHandleAdornment.Adornee = Part
+	CylinderHandleAdornment.Transparency = 0.5
+	CylinderHandleAdornment.Color3 = Color
+	CylinderHandleAdornment.AlwaysOnTop = true
+	CylinderHandleAdornment.ZIndex = 1
+	CylinderHandleAdornment.Height = Length
+	CylinderHandleAdornment.Radius = 0.1
+	CylinderHandleAdornment.CFrame = Offset * CFrame.new(0,0,-(Length + Part.Size.Z)/2)
+	CylinderHandleAdornment.Visible = false
+	CylinderHandleAdornment.Parent = script
+	
+	local ConeHandleAdornment = Instance.new("ConeHandleAdornment")
+	ConeHandleAdornment.Adornee = Part
+	ConeHandleAdornment.Transparency = 0.5
+	ConeHandleAdornment.Color3 = Color
+	ConeHandleAdornment.AlwaysOnTop = true
+	ConeHandleAdornment.ZIndex = 1
+	ConeHandleAdornment.Height = 1
+	ConeHandleAdornment.Radius = 0.3
+	ConeHandleAdornment.CFrame = Offset * CFrame.new(0,0,-(Length + Part.Size.Z/2))
+	ConeHandleAdornment.Visible = false
+	ConeHandleAdornment.Parent = script
+	
+	table.insert(VisableAdorns,CylinderHandleAdornment)
+	table.insert(VisableAdorns,ConeHandleAdornment)
+end
+
+local function SetAdornsVisible(Visible)
+	for _,Adorn in pairs(VisableAdorns) do
+		Adorn.Visible = Visible
+	end
+	for _,Adorn in pairs(EnableableAdorns) do
+		Adorn.Enabled = Visible
+	end
+end
+
+CreateRing(Jetway:WaitForChild("BackRotator"):WaitForChild("Main"),ADColor,10,CFrame.Angles(0,0,math.pi/2) * CFrame.new(0,4.6,0))
+CreateLetter(Jetway:WaitForChild("BackRotator"):WaitForChild("Main"),ADColor,Vector3.new(-4.6,12,0),"A")
+CreateLetter(Jetway:WaitForChild("BackRotator"):WaitForChild("Main"),ADColor,Vector3.new(-4.6,-12,0),"D")
+CreateRing(Jetway:WaitForChild("FrontRotator"):WaitForChild("Main"),ZCColor,10,CFrame.Angles(0,0,math.pi/2) * CFrame.new(0,4.6,0))
+CreateLetter(Jetway:WaitForChild("FrontRotator"):WaitForChild("Main"),ZCColor,Vector3.new(-4.6,12,0),"C")
+CreateLetter(Jetway:WaitForChild("FrontRotator"):WaitForChild("Main"),ZCColor,Vector3.new(-4.6,-12,0),"Z")
+CreateRing(Jetway:WaitForChild("FrontDoorCanopy"):WaitForChild("Angle_0"):WaitForChild("Center"),RFColor,12,CFrame.new(9.4,0,0))
+CreateLetter(Jetway:WaitForChild("FrontDoorCanopy"):WaitForChild("Angle_0"):WaitForChild("Center"),RFColor,Vector3.new(9.4,0,-14),"R")
+CreateLetter(Jetway:WaitForChild("FrontDoorCanopy"):WaitForChild("Angle_0"):WaitForChild("Center"),RFColor,Vector3.new(9.4,0,14),"F")
+CreateArrow(Jetway:WaitForChild("Walkway3"):WaitForChild("Main"),WSColor,5,CFrame.new(0,4,0) * CFrame.Angles(0,math.pi,0))
+CreateArrow(Jetway:WaitForChild("Walkway1"):WaitForChild("Main"),WSColor,5,CFrame.new(0,4,0))
+CreateLetter(Jetway:WaitForChild("Walkway1"):WaitForChild("Main"),WSColor,Vector3.new(0,4,-21),"W")
+CreateLetter(Jetway:WaitForChild("Walkway3"):WaitForChild("Main"),WSColor,Vector3.new(0,4,21),"S")
+CreateArrow(Jetway:WaitForChild("Walkway1"):WaitForChild("Main"),QEColor,5,CFrame.new(0,-3.5,0) * CFrame.Angles(math.pi/2,0,0))
+CreateArrow(Jetway:WaitForChild("Walkway1"):WaitForChild("Main"),QEColor,5,CFrame.new(0,12.6,0) * CFrame.Angles(-math.pi/2,0,0))
+CreateLetter(Jetway:WaitForChild("Walkway1"):WaitForChild("Main"),QEColor,Vector3.new(0,17,0),"E")
+CreateLetter(Jetway:WaitForChild("Walkway1"):WaitForChild("Main"),QEColor,Vector3.new(0,-8.1,0),"Q")
+
+local ControlsVisible = false
+local DB = true
+ToggleControls.MouseButton1Down:connect(function()
+	if DB == true then
+		DB = false
+		ControlsVisible = not ControlsVisible
+		SetAdornsVisible(ControlsVisible)
+		wait()
+		DB = true
+	end
+end)
+
+
+
+
+
+
+local UpdateFrontRotatorRender = Jetway:WaitForChild("UpdateFrontRotatorRender")
+local UpdateBackRotatorRender = Jetway:WaitForChild("UpdateBackRotatorRender")
+local UpdateCanopyRender = Jetway:WaitForChild("UpdateCanopyRender")
+local UpdateLengths = Jetway:WaitForChild("UpdateLengths")
+
+local Walkway2,Walkway3 = Jetway:WaitForChild("Walkway2"),Jetway:WaitForChild("Walkway3")
+local WheelConnector,BackRotator = Jetway:WaitForChild("WheelConnector"),Jetway:WaitForChild("BackRotator")
+
+local Main2,Main3 = Walkway2:WaitForChild("Main"),Walkway3:WaitForChild("Main")
+local MainWheelPole = WheelConnector:WaitForChild("MainWheelPole")
+local BackMain = BackRotator:WaitForChild("Main")
+
+local Slider2,Slider3 = Main2:WaitForChild("Slider"),Main3:WaitForChild("Slider")
+local WheelSlider = MainWheelPole:WaitForChild("Slider")
+local FrontRotator = Jetway:WaitForChild("FrontRotator"):WaitForChild("Main")
+local DoorRotator = Jetway:WaitForChild("FrontRotator"):WaitForChild("Main"):WaitForChild("DoorRotator")
+local MainRotator = BackMain:WaitForChild("MainRotator")
+local CanopyRotator = Jetway:WaitForChild("FrontDoor"):WaitForChild("Main"):WaitForChild("CanopyRotator")
+
+local MinWalkwayDistance,MaxWalkwayDistance = 6,22
+local WalkwayStepDistance = 0.01
+local CurWalkwayDistance = Slider2.Length
+
+local MinWheelDistance,MaxWheelDistance = 2,7.8
+local WheelStepDistance = 0.01
+local CurWheelDistance = WheelSlider.Length
+
+local DoorMinAngle,DoorMaxAngle = -20,70
+local DoorStep = 0.25
+local CurDoorAngle = DoorRotator.TargetAngle
+
+local MainMinAngle,MainMaxAngle = -60,60
+local MainStep = 0.05
+local CurMainAngle = MainRotator.TargetAngle
+
+local CanopyMinAngle,CanopyMaxAngle = 0,45
+local CanopyStep = 0.25
+local CurCanopyAngle = CanopyRotator.TargetAngle
+
+local Forward,Backward = false,false
+local WheelUpward,WheelDownward = false,false
+local DoorRotateLeft,DoorRotateRight = false,false
+local MainRotateLeft,MainRotateRight = false,false
+local CanopyUp,CanopyDown = false,false
+
+
+Humanoid.Changed:connect(function(Name)
+	if Name == "SeatPart" then
+		if not Humanoid.SeatPart then
+			Camera.CameraType = "Custom"
+			ScreenGui:Destroy()
+			script:Destroy()
+		end
+	end
+end)
+
+local function UpdatePosition()
+	if Forward == true and Backward == false then
+		CurWalkwayDistance = min(MaxWalkwayDistance,max(MinWalkwayDistance,CurWalkwayDistance + WalkwayStepDistance))
+		Slider2.Length = CurWalkwayDistance
+		Slider3.Length = CurWalkwayDistance
+	elseif Forward == false and Backward == true then
+		CurWalkwayDistance = min(MaxWalkwayDistance,max(MinWalkwayDistance,CurWalkwayDistance - WalkwayStepDistance))
+		Slider2.Length = CurWalkwayDistance
+		Slider3.Length = CurWalkwayDistance
+	end	
+	
+	if WheelUpward == true and WheelDownward == false then
+		CurWheelDistance = min(MaxWheelDistance,max(MinWheelDistance,CurWheelDistance + WalkwayStepDistance))
+		WheelSlider.Length = CurWheelDistance
+	elseif WheelUpward == false and WheelDownward == true then
+		CurWheelDistance = min(MaxWheelDistance,max(MinWheelDistance,CurWheelDistance - WalkwayStepDistance))
+		WheelSlider.Length = CurWheelDistance
+	end	
+	
+	if DoorRotateLeft == true and DoorRotateRight == false then
+		CurDoorAngle = min(DoorMaxAngle,max(DoorMinAngle,CurDoorAngle + DoorStep))
+		DoorRotator.TargetAngle = CurDoorAngle
+		UpdateFrontRotatorRender:FireServer(CurDoorAngle)
+	elseif DoorRotateLeft == false and DoorRotateRight == true then
+		CurDoorAngle = min(DoorMaxAngle,max(DoorMinAngle,CurDoorAngle - DoorStep))
+		DoorRotator.TargetAngle = CurDoorAngle
+		UpdateFrontRotatorRender:FireServer(CurDoorAngle)
+	end	
+	
+	if MainRotateLeft == true and MainRotateRight == false then
+		CurMainAngle = min(MainMaxAngle,max(MainMinAngle,CurMainAngle + MainStep))
+		MainRotator.TargetAngle = CurMainAngle
+		UpdateBackRotatorRender:FireServer(CurMainAngle)
+	elseif MainRotateLeft == false and MainRotateRight == true then
+		CurMainAngle = min(MainMaxAngle,max(MainMinAngle,CurMainAngle - MainStep))
+		MainRotator.TargetAngle = CurMainAngle
+		UpdateBackRotatorRender:FireServer(CurMainAngle)
+	end	
+	
+	if CanopyUp == true and CanopyDown == false then
+		CurCanopyAngle = min(CanopyMaxAngle,max(CanopyMinAngle,CurCanopyAngle + CanopyStep))
+		CanopyRotator.TargetAngle = CurCanopyAngle
+		UpdateCanopyRender:FireServer(CurCanopyAngle)
+	elseif CanopyUp == false and CanopyDown == true then
+		CurCanopyAngle = min(CanopyMaxAngle,max(CanopyMinAngle,CurCanopyAngle - CanopyStep))
+		CanopyRotator.TargetAngle = CurCanopyAngle
+		UpdateCanopyRender:FireServer(CurCanopyAngle)
+	end	
+end
+
+local KeyCodeW = Enum.KeyCode.W
+local KeyCodeS = Enum.KeyCode.S
+local KeyCodeE = Enum.KeyCode.E
+local KeyCodeQ = Enum.KeyCode.Q
+local KeyCodeZ = Enum.KeyCode.Z
+local KeyCodeC = Enum.KeyCode.C
+local KeyCodeA = Enum.KeyCode.A
+local KeyCodeD = Enum.KeyCode.D
+local KeyCodeR = Enum.KeyCode.R
+local KeyCodeF = Enum.KeyCode.F
+
+
+
+local UserInputService = game:GetService("UserInputService")
+UserInputService.InputBegan:connect(function(Input)
+	if Input.KeyCode == KeyCodeW then
+		Forward = true
+	elseif Input.KeyCode == KeyCodeS then
+		Backward = true
+	elseif Input.KeyCode == KeyCodeE then
+		WheelUpward = true
+	elseif Input.KeyCode == KeyCodeQ then
+		WheelDownward = true
+	elseif Input.KeyCode == KeyCodeZ then
+		DoorRotateLeft = true
+	elseif Input.KeyCode == KeyCodeC then
+		DoorRotateRight = true
+	elseif Input.KeyCode == KeyCodeA then
+		MainRotateLeft = true
+	elseif Input.KeyCode == KeyCodeD then
+		MainRotateRight = true
+	elseif Input.KeyCode == KeyCodeF then
+		CanopyUp = true
+	elseif Input.KeyCode == KeyCodeR then
+		CanopyDown = true
+	end
+end)
+
+UserInputService.InputEnded:connect(function(Input)
+	if Input.KeyCode == KeyCodeW then
+		Forward = false
+	elseif Input.KeyCode == KeyCodeS then
+		Backward = false
+	elseif Input.KeyCode == KeyCodeE then
+		WheelUpward = false
+	elseif Input.KeyCode == KeyCodeQ then
+		WheelDownward = false
+	elseif Input.KeyCode == KeyCodeZ then
+		DoorRotateLeft = false
+	elseif Input.KeyCode == KeyCodeC then
+		DoorRotateRight = false
+	elseif Input.KeyCode == KeyCodeA then
+		MainRotateLeft = false
+	elseif Input.KeyCode == KeyCodeD then
+		MainRotateRight = false
+	elseif Input.KeyCode == KeyCodeF then
+		CanopyUp = false
+	elseif Input.KeyCode == KeyCodeR then
+		CanopyDown = false
+	end
+	
+	if not Forward and not Backward and not WheelUpward and not WheelDownward then
+		UpdateLengths:FireServer(CurWalkwayDistance,CurWheelDistance)
+	end
+end)
+
+
+
+
+while true do
+	UpdatePosition()
+	wait()
+end
