@@ -1,0 +1,96 @@
+local recrlimit=20--Sets recrusive limit so you do not crash studio if u want this off set it to some rediculous value like 10000
+local inarray=false
+local rep=0
+function printArrInfo(arr)
+	if #arr>recrlimit and inarray then
+		return
+	end
+	for i,v in next,arr do
+		if	type(v)=="table" then
+			print(string.rep("\t",rep)..tostring(i).."={")
+			inarray=true
+			rep=rep+1
+			printArrInfo(v)
+		else
+			print(string.rep("\t",rep)..tostring(i).."=".."\""..tostring(v).."\"")
+		end
+	end
+	if inarray then
+		rep=rep-1
+		print(string.rep("\t",rep).."}")
+		inarray=false
+	end
+end
+local API=require(script.Parent)
+function test1()
+	--[[
+		this function tests the API on
+		 GetBoardMembers()
+		 GetAllBoards()
+		by outputing the members to all boards you are in.
+	--]]
+	local allboardids=API:GetAllBoards()--table of BoardIDs of boards I am in
+	printArrInfo(allboardids)--Prints out all board ids
+	print("Board Members")
+	for i,v in next,allboardids do
+		print(tostring(v).."={")
+		rep=1
+		local boardMembers=API:GetBoardMembers(v)--gets the board members of "v" a.k.a. one of the boards im in
+		printArrInfo(boardMembers)--Prints the info of the array returned by GetBoardMembers
+		rep=0
+		print("}")
+	end
+	print("\n\n\n\n")
+end
+
+function test2() 
+	--[[
+		this function tests the API on
+		 GetAllBoards()
+		 GetBoardInfo()
+		by outputting all available information on all your boards
+	--]]
+	local allboardids=API:GetAllBoards()--table of BoardIDs of boards I am in
+	for i,v in next,allboardids do
+		print(tostring(v).."={")
+		rep=1
+		printArrInfo(API:GetBoardInfo(v))
+		rep=0
+		print("}")
+	end
+end
+function test3()
+	--[[
+		this function tests the API on
+		 GetAllBoards()
+		 GetBoardID()
+		 GetListID()
+		 GetLists()
+		 GetCardsInList()
+		by outputting all board names and id's and alll lists and list ids and all cards in the first list 
+		of every board
+	--]]
+	local allboardids=API:GetAllBoards()--table of BoardIDs of boards I am in
+	for i,v in next,allboardids do
+		local boardName=API:GetBoardNameFromId(v)
+		print(boardName.."="..API:GetBoardID(boardName))
+		print("lists={")
+		local lists=API:GetLists(v)
+		rep=1
+		for q,e in next,lists do
+			print(e["name"].."="..API:GetListID(e["name"],v))
+		end
+		printArrInfo(lists)
+		if lists[1]~=nil then
+			rep=2
+			print("\tcards={")
+			printArrInfo(API:GetCardsInList(lists[1]["id"]))
+			print("\t}")
+		end
+		rep=0
+		print("}")
+	end
+end
+test1()
+test2()
+test3()
